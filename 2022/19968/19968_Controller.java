@@ -4,14 +4,17 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import org.firstinspires.ftc.teamcode.DriveCode;
 
 @TeleOp(name = "_19968DriverControl (Blocks to Java)")
-public class _19968DriverControl extends LinearOpMode {
-
-  private DcMotor frontright;
-  private DcMotor frontleft;
-  private DcMotor backleft;
-  private DcMotor backright;
+public class DriverControl extends LinearOpMode {
+  
+  private DriveCode Driver;
+  
+  private DcMotor fr_rt;
+  private DcMotor fr_lt;
+  private DcMotor bk_lt;
+  private DcMotor bk_rt;
 
   double powerFactor;
   float leftStickY;
@@ -35,8 +38,8 @@ public class _19968DriverControl extends LinearOpMode {
     }
 
     //Get stick inputs
-    leftStickY = -gamepad1.left_stick_y;
-    leftStickX = gamepad1.left_stick_x;
+    leftStickY = gamepad1.left_stick_y;
+    leftStickX = -gamepad1.left_stick_x;
     rightStickX = gamepad1.right_stick_x;
 
     //Set the power values based on stick input
@@ -46,10 +49,10 @@ public class _19968DriverControl extends LinearOpMode {
     powerBackRight = leftStickY + (leftStickX - rightStickX);
 
     //Set the power to the motors
-    frontright.setPower(powerFactor * powerFrontRight);
-    frontleft.setPower(powerFactor * powerFrontLeft);
-    backleft.setPower(powerFactor * powerBackLeft);
-    backright.setPower(powerFactor * powerBackRight);
+    fr_rt.setPower(powerFactor * powerFrontRight);
+    fr_lt.setPower(powerFactor * powerFrontLeft);
+    bk_lt.setPower(powerFactor * powerBackLeft);
+    bk_rt.setPower(powerFactor * powerBackRight);
 
     //Print data to the screen
     telemetry.addData("leftStickY", leftStickY);
@@ -70,16 +73,17 @@ public class _19968DriverControl extends LinearOpMode {
   public void runOpMode() {
 
     //Map the names from the configuration to the variables
-    frontright = hardwareMap.get(DcMotor.class, "fr_rt");
-    frontleft = hardwareMap.get(DcMotor.class, "fr_lt");
-    backleft = hardwareMap.get(DcMotor.class, "bk_lt");
-    backright = hardwareMap.get(DcMotor.class, "bk_rt");
-
+    fr_rt = hardwareMap.get(DcMotor.class, "fr_rt");
+    fr_lt = hardwareMap.get(DcMotor.class, "fr_lt");
+    bk_lt = hardwareMap.get(DcMotor.class, "bk_lt");
+    bk_rt = hardwareMap.get(DcMotor.class, "bk_rt");
+    Driver = new DriveCode();
+    Driver.initialize(fr_rt, fr_lt, bk_lt, bk_rt, telemetry);
     //Set the directions for the motors
-    frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
-    frontright.setDirection(DcMotorSimple.Direction.FORWARD);
-    backleft.setDirection(DcMotorSimple.Direction.REVERSE);
-    backright.setDirection(DcMotorSimple.Direction.FORWARD);
+    fr_lt.setDirection(DcMotorSimple.Direction.REVERSE);
+    fr_rt.setDirection(DcMotorSimple.Direction.FORWARD);
+    bk_lt.setDirection(DcMotorSimple.Direction.REVERSE);
+    bk_rt.setDirection(DcMotorSimple.Direction.FORWARD);
 
     //Initialize the variables
     leftStickX = 0;
@@ -92,8 +96,14 @@ public class _19968DriverControl extends LinearOpMode {
     //This is the main loop. I will call the drive function on a loop until you stop the robot
     if (opModeIsActive()) {
       while (opModeIsActive()) {
-        drive();
+        //drive();
+        //Get stick inputs
+        leftStickY = gamepad1.left_stick_y;
+        leftStickX = -gamepad1.left_stick_x;
+        rightStickX = gamepad1.right_stick_x;
+        Driver.drive(leftStickY, leftStickX, rightStickX); 
       }
     }
   }
 }
+
