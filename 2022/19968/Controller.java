@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
 
-public class 19968_Controller {
+public class Controller {
 
   private DcMotor fr_rt;
   private DcMotor fr_lt;
