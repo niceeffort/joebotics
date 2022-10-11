@@ -1,46 +1,41 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import org.firstinspires.ftc.teamcode.DriveCode;
 
-@TeleOp(name = "_19968DriverControl (Blocks to Java)")
-public class DriverControl extends LinearOpMode {
-  
-  private DriveCode Driver;
-  
+
+
+public class 19968_Controller {
+
   private DcMotor fr_rt;
   private DcMotor fr_lt;
   private DcMotor bk_lt;
   private DcMotor bk_rt;
+  private Telemetry telemetry;
 
-  double powerFactor;
-  float leftStickY;
-  float leftStickX;
-  float rightStickX;
+public void initialize(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft, Telemetry main_telemetry) {
+    fr_rt = frontRight;
+    fr_lt = frontLeft;
+    bk_lt = backLeft;
+    bk_rt = backRight;
+    
+    fr_lt.setDirection(DcMotorSimple.Direction.REVERSE);
+    fr_rt.setDirection(DcMotorSimple.Direction.FORWARD);
+    bk_lt.setDirection(DcMotorSimple.Direction.REVERSE);
+    bk_rt.setDirection(DcMotorSimple.Direction.FORWARD);
+    
+    telemetry = main_telemetry;
+}
 
-  /**
-   * This function reads inputs from the joysticks and powers the wheels
-   */
-  private void drive() {
+public void drive(float leftStickY,float leftStickX, float rightStickX) {
     float powerFrontLeft;
     float powerBackLeft;
     float powerFrontRight;
     float powerBackRight;
-
-    if (gamepad1.a) {
-      powerFactor = 1;
-    }
-    if (gamepad1.y) {
-      powerFactor = 0.5;
-    }
-
-    //Get stick inputs
-    leftStickY = gamepad1.left_stick_y;
-    leftStickX = -gamepad1.left_stick_x;
-    rightStickX = gamepad1.right_stick_x;
+    
+    float powerFactor = 1.0f; 
+  
 
     //Set the power values based on stick input
     powerFrontLeft = leftStickY + leftStickX + rightStickX;
@@ -65,45 +60,18 @@ public class DriverControl extends LinearOpMode {
     telemetry.addData("powerFactor", powerFactor);
     telemetry.update();
   }
-
-  /**
-   * This function is executed when this Op Mode is selected from the Driver Station.
-   */
-  @Override
-  public void runOpMode() {
-
-    //Map the names from the configuration to the variables
-    fr_rt = hardwareMap.get(DcMotor.class, "fr_rt");
-    fr_lt = hardwareMap.get(DcMotor.class, "fr_lt");
-    bk_lt = hardwareMap.get(DcMotor.class, "bk_lt");
-    bk_rt = hardwareMap.get(DcMotor.class, "bk_rt");
-    Driver = new DriveCode();
-    Driver.initialize(fr_rt, fr_lt, bk_lt, bk_rt, telemetry);
-    //Set the directions for the motors
-    fr_lt.setDirection(DcMotorSimple.Direction.REVERSE);
-    fr_rt.setDirection(DcMotorSimple.Direction.FORWARD);
-    bk_lt.setDirection(DcMotorSimple.Direction.REVERSE);
-    bk_rt.setDirection(DcMotorSimple.Direction.FORWARD);
-
-    //Initialize the variables
-    leftStickX = 0;
-    leftStickY = 0;
-    rightStickX = 0;
-    powerFactor = 0.5;
-
-    waitForStart();
-
-    //This is the main loop. I will call the drive function on a loop until you stop the robot
-    if (opModeIsActive()) {
-      while (opModeIsActive()) {
-        //drive();
-        //Get stick inputs
-        leftStickY = gamepad1.left_stick_y;
-        leftStickX = -gamepad1.left_stick_x;
-        rightStickX = gamepad1.right_stick_x;
-        Driver.drive(leftStickY, leftStickX, rightStickX); 
-      }
-    }
-  }
+  
+public void liftUp(){
+    telemetry.addLine("liftUp");
+}
+public void liftDown(){
+    telemetry.addLine("liftDown");
 }
 
+public void clawOpen(){
+    telemetry.addLine("clawOpen");
+}
+public void clawClose(){
+    telemetry.addLine("clawClose");
+}
+}
