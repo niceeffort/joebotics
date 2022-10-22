@@ -45,6 +45,7 @@ public class DriveCode extends LinearOpMode {
         leftStickX = -gamepad1.left_stick_x;
         rightStickX = gamepad1.right_stick_x;
         telemetry.addData("servoPosition", RobotController.claw.getPosition());
+        telemetry.addData("liftPosition", RobotController.lift.getCurrentPosition());
         //claw.setPosition(1);
         RobotController.drive(leftStickY, leftStickX, rightStickX); 
         

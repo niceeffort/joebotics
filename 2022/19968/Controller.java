@@ -14,9 +14,12 @@ public class Controller {
   private DcMotor fr_lt;
   private DcMotor bk_lt;
   private DcMotor bk_rt;
-  private DcMotor lift; 
+  public DcMotor lift; 
   public Servo claw; 
   private LinearOpMode robotOpMode = null; 
+  static final int LIFT_SPEED = 200; 
+  static final int LIFT_MAX = 2000;
+  static final int LIFT_MIN = 0;
 
 public Controller (LinearOpMode opMode){
     robotOpMode = opMode;
@@ -31,10 +34,15 @@ public void initialize() {
     lift = robotOpMode.hardwareMap.get(DcMotor.class, "lift");
     claw = robotOpMode.hardwareMap.get(Servo.class, "claw");
     
+    //setting the directions for the motors 
     fr_lt.setDirection(DcMotorSimple.Direction.REVERSE);
     fr_rt.setDirection(DcMotorSimple.Direction.FORWARD);
     bk_lt.setDirection(DcMotorSimple.Direction.REVERSE);
     bk_rt.setDirection(DcMotorSimple.Direction.FORWARD);
+    
+    //setting the lift to use encoders 
+    lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     
 }
 
@@ -72,17 +80,29 @@ public void drive(float leftStickY,float leftStickX, float rightStickX) {
   }
   
 public void liftUp(){
-    robotOpMode.telemetry.addLine("liftUp");
-    lift.setPower(1);
+    runLift(LIFT_SPEED);
 }
 public void liftDown(){
-    robotOpMode.telemetry.addLine("liftDown");
-    lift.setPower(-1);
+    runLift(-LIFT_SPEED);
 }
 public void liftStop(){
     robotOpMode.telemetry.addLine("liftStop");
     lift.setPower(0);
 }
+
+private void runLift(int position){
+    int currentPos = lift.getCurrentPosition();
+    int newPosition = currentPos + position; 
+    
+    if (newPosition > LIFT_MIN && newPosition < LIFT_MAX){
+        
+        lift.setTargetPosition(currentPos + position);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(1);
+        while (lift.isBusy()){};
+        lift.setPower(0);
+    }
+};
 
 public void clawOpen(){
     robotOpMode.telemetry.addLine("clawOpen");
