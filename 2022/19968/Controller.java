@@ -18,8 +18,8 @@ public class Controller {
   public Servo claw; 
   private LinearOpMode robotOpMode = null; 
   static final int LIFT_SPEED = 200; 
-  static final int LIFT_MAX = 2000;
-  static final int LIFT_MIN = 0;
+  static final int LIFT_MAX = 0;
+  static final int LIFT_MIN = -3000;
 
 public Controller (LinearOpMode opMode){
     robotOpMode = opMode;
@@ -43,6 +43,7 @@ public void initialize() {
     //setting the lift to use encoders 
     lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     
 }
 
