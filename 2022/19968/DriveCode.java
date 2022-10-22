@@ -12,12 +12,6 @@ public class DriveCode extends LinearOpMode {
   
   private Controller RobotController;
   
-  private DcMotor fr_rt;
-  private DcMotor fr_lt;
-  private DcMotor bk_lt;
-  private DcMotor bk_rt;
-  private DcMotor lift;
-  private Servo claw;
 
   double powerFactor;
   float leftStickY;
@@ -31,15 +25,9 @@ public class DriveCode extends LinearOpMode {
   @Override
   public void runOpMode() {
 
-    //Map the names from the configuration to the variables
-    fr_rt = hardwareMap.get(DcMotor.class, "fr_rt");
-    fr_lt = hardwareMap.get(DcMotor.class, "fr_lt");
-    bk_lt = hardwareMap.get(DcMotor.class, "bk_lt");
-    bk_rt = hardwareMap.get(DcMotor.class, "bk_rt");
-    lift = hardwareMap.get(DcMotor.class, "lift");
-    claw = hardwareMap.get(Servo.class, "claw");
-    RobotController = new Controller();
-    RobotController.initialize(fr_rt, fr_lt, bk_lt, bk_rt, lift, claw, telemetry);
+   
+    RobotController = new Controller(this);
+    RobotController.initialize();
     
     //Initialize the variables
     leftStickX = 0;
@@ -56,7 +44,7 @@ public class DriveCode extends LinearOpMode {
         leftStickY = gamepad1.left_stick_y;
         leftStickX = -gamepad1.left_stick_x;
         rightStickX = gamepad1.right_stick_x;
-        telemetry.addData("servoPosition", claw.getPosition());
+        telemetry.addData("servoPosition", RobotController.claw.getPosition());
         //claw.setPosition(1);
         RobotController.drive(leftStickY, leftStickX, rightStickX); 
         

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -14,29 +15,27 @@ public class Controller {
   private DcMotor bk_lt;
   private DcMotor bk_rt;
   private DcMotor lift; 
-  private Servo claw; 
-  private Telemetry telemetry;
+  public Servo claw; 
+  private LinearOpMode robotOpMode = null; 
 
-public void initialize(DcMotor frontRight,
-                       DcMotor frontLeft, 
-                       DcMotor backRight,
-                       DcMotor backLeft,
-                       DcMotor _lift,
-                       Servo _claw,
-                       Telemetry main_telemetry) {
-    fr_rt = frontRight;
-    fr_lt = frontLeft;
-    bk_lt = backLeft;
-    bk_rt = backRight;
-    lift = _lift;
-    claw = _claw;
+public Controller (LinearOpMode opMode){
+    robotOpMode = opMode;
+}
+
+public void initialize() {
+     //Map the names from the configuration to the variables
+    fr_rt = robotOpMode.hardwareMap.get(DcMotor.class, "fr_rt");
+    fr_lt = robotOpMode.hardwareMap.get(DcMotor.class, "fr_lt");
+    bk_lt = robotOpMode.hardwareMap.get(DcMotor.class, "bk_lt");
+    bk_rt = robotOpMode.hardwareMap.get(DcMotor.class, "bk_rt");
+    lift = robotOpMode.hardwareMap.get(DcMotor.class, "lift");
+    claw = robotOpMode.hardwareMap.get(Servo.class, "claw");
     
     fr_lt.setDirection(DcMotorSimple.Direction.REVERSE);
     fr_rt.setDirection(DcMotorSimple.Direction.FORWARD);
     bk_lt.setDirection(DcMotorSimple.Direction.REVERSE);
     bk_rt.setDirection(DcMotorSimple.Direction.FORWARD);
     
-    telemetry = main_telemetry;
 }
 
 public void drive(float leftStickY,float leftStickX, float rightStickX) {
@@ -61,37 +60,37 @@ public void drive(float leftStickY,float leftStickX, float rightStickX) {
     bk_rt.setPower(powerFactor * powerBackRight);
 
     //Print data to the screen
-    telemetry.addData("leftStickY", leftStickY);
-    telemetry.addData("leftStickX", leftStickX);
-    telemetry.addData("rightStickX", rightStickX);
-    telemetry.addData("powerFrontLeft", powerFrontLeft);
-    telemetry.addData("powerBackLeft", powerBackLeft);
-    telemetry.addData("powerFrontRight", powerFrontRight);
-    telemetry.addData("powerBackRight", powerBackRight);
-    telemetry.addData("powerFactor", powerFactor);
-    telemetry.update();
+    robotOpMode.telemetry.addData("leftStickY", leftStickY);
+    robotOpMode.telemetry.addData("leftStickX", leftStickX);
+    robotOpMode.telemetry.addData("rightStickX", rightStickX);
+    robotOpMode.telemetry.addData("powerFrontLeft", powerFrontLeft);
+    robotOpMode.telemetry.addData("powerBackLeft", powerBackLeft);
+    robotOpMode.telemetry.addData("powerFrontRight", powerFrontRight);
+    robotOpMode.telemetry.addData("powerBackRight", powerBackRight);
+    robotOpMode.telemetry.addData("powerFactor", powerFactor);
+    robotOpMode.telemetry.update();
   }
   
 public void liftUp(){
-    telemetry.addLine("liftUp");
+    robotOpMode.telemetry.addLine("liftUp");
     lift.setPower(1);
 }
 public void liftDown(){
-    telemetry.addLine("liftDown");
+    robotOpMode.telemetry.addLine("liftDown");
     lift.setPower(-1);
 }
 public void liftStop(){
-    telemetry.addLine("liftStop");
+    robotOpMode.telemetry.addLine("liftStop");
     lift.setPower(0);
 }
 
 public void clawOpen(){
-    telemetry.addLine("clawOpen");
-    claw.setPosition(0);
+    robotOpMode.telemetry.addLine("clawOpen");
+    claw.setPosition(0.3);
 }
 public void clawClose(){
-    telemetry.addLine("clawClose");
-    claw.setPosition(1);
+    robotOpMode.telemetry.addLine("clawClose");
+    claw.setPosition(0);
     
 }
 }
