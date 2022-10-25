@@ -34,11 +34,9 @@ public void initialize() {
     lift = robotOpMode.hardwareMap.get(DcMotor.class, "lift");
     claw = robotOpMode.hardwareMap.get(Servo.class, "claw");
     
-    //setting the directions for the motors 
-    fr_lt.setDirection(DcMotorSimple.Direction.REVERSE);
-    fr_rt.setDirection(DcMotorSimple.Direction.FORWARD);
-    bk_lt.setDirection(DcMotorSimple.Direction.REVERSE);
-    bk_rt.setDirection(DcMotorSimple.Direction.FORWARD);
+    //setting the directions for the motors
+    fr_rt.setDirection(DcMotorSimple.Direction.REVERSE);
+    bk_rt.setDirection(DcMotorSimple.Direction.REVERSE);
     
     //setting the lift to use encoders 
     lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
