@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -16,6 +17,7 @@ public class Controller {
   private DcMotor bk_rt;
   public DcMotor lift; 
   public Servo claw; 
+  private ColorSensor color_sensor;
   private LinearOpMode robotOpMode = null; 
   static final int LIFT_SPEED = 200; 
   static final int LIFT_MAX = 0;
@@ -33,6 +35,7 @@ public void initialize() {
     bk_rt = robotOpMode.hardwareMap.get(DcMotor.class, "bk_rt");
     lift = robotOpMode.hardwareMap.get(DcMotor.class, "lift");
     claw = robotOpMode.hardwareMap.get(Servo.class, "claw");
+    color_sensor = robotOpMode.hardwareMap.get(ColorSensor.class, "color_sensor");
     
     //setting the directions for the motors
     fr_rt.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -42,6 +45,8 @@ public void initialize() {
     lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    
+    color_sensor.enableLed(false);
     
 }
 
@@ -110,6 +115,13 @@ public void clawOpen(){
 public void clawClose(){
     robotOpMode.telemetry.addLine("clawClose");
     claw.setPosition(0);
-    
 }
+
+    //color sensor 
+ public void color(){
+     color_sensor.enableLed(false);
+     int red = 0;
+     red = color_sensor.red(); 
+     robotOpMode.telemetry.addData("color: ", red);
+ }
 }
