@@ -21,9 +21,13 @@ public class Controller {
   private ColorSensor color_sensor;
   private LinearOpMode robotOpMode = null; 
   private ElapsedTime runtime = new ElapsedTime();
+  private int desiredLiftPos = 0;
+  private double elapsedLiftTime = 0;
+  private int lastLiftPos = 0;
+  private boolean liftTimeOut = true; 
   static final int LIFT_SPEED = 200; 
   static final int LIFT_MAX = 0;
-  static final int LIFT_MIN = -1900;
+  static final int LIFT_MIN = -3000;
 
 public Controller (LinearOpMode opMode){
     robotOpMode = opMode;
@@ -100,20 +104,20 @@ public void liftStop(){
 
 private void runLift(int position){
     int currentPos = lift.getCurrentPosition();
-    int newPosition = currentPos + position;
-    double startTime = runtime.seconds();
-    double elapsedTime = 0.0;
+    liftTimeOut = true; 
     
-    if (newPosition > LIFT_MIN && newPosition < LIFT_MAX){
-        
-        lift.setTargetPosition(currentPos + position);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift.setPower(1);
-        while (lift.isBusy() || elapsedTime < 2.0){
-            elapsedTime = runtime.seconds() - startTime;
-        };
-        lift.setPower(0);
+    desiredLiftPos = currentPos + position;
+    
+    if (desiredLiftPos < LIFT_MIN){
+        desiredLiftPos = LIFT_MIN;
     }
+    else if (desiredLiftPos > LIFT_MAX){
+        desiredLiftPos = LIFT_MAX;
+    }
+        
+    lift.setTargetPosition(desiredLiftPos);
+    lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    lift.setPower(1);
 };
 
 public void clawOpen(){
@@ -131,5 +135,30 @@ public void clawClose(){
      int red = 0;
      red = color_sensor.red(); 
      robotOpMode.telemetry.addData("color: ", red);
+ }
+ 
+ public void update(){
+     if (lift.isBusy()){
+         int currentLiftPos = lift.getCurrentPosition(); 
+         
+         if (currentLiftPos == desiredLiftPos){
+             lift.setPower(0);
+         }
+         else if (lastLiftPos - currentLiftPos < 5) {
+             if (liftTimeOut){
+                 elapsedLiftTime = runtime.seconds();
+                 liftTimeOut = false; 
+             }
+             else {
+                elapsedLiftTime = runtime.seconds() - elapsedLiftTime;
+             }
+         }
+         if (elapsedLiftTime > 2.0){
+             lift.setPower(0);
+             desiredLiftPos = currentLiftPos; 
+         }
+         
+         lastLiftPos = lift.getCurrentPosition();
+     }
  }
 }
