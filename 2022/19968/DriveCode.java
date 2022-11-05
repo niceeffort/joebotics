@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -49,11 +50,16 @@ public class DriveCode extends LinearOpMode {
         //claw.setPosition(1);
         RobotController.drive(leftStickY, leftStickX, rightStickX); 
         
+        telemetry.addData("GamePad2 Up:", gamepad2.dpad_up);
+        telemetry.addData("GamePad2 Down:", gamepad2.dpad_down);
+
         //Lift Control
         if (gamepad2.dpad_up){
+          telemetry.addLine("liftUp_Driver");
           RobotController.liftUp();
         }
         else if (gamepad2.dpad_down){
+          telemetry.addLine("liftDown_Driver");
           RobotController.liftDown();
         }
         else {
@@ -67,6 +73,8 @@ public class DriveCode extends LinearOpMode {
         if (gamepad2.left_bumper){
           RobotController.clawOpen();
         }
+        
+        RobotController.color();
         
       }
     }

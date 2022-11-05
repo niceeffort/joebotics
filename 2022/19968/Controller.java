@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -19,9 +20,10 @@ public class Controller {
   public Servo claw; 
   private ColorSensor color_sensor;
   private LinearOpMode robotOpMode = null; 
+  private ElapsedTime runtime = new ElapsedTime();
   static final int LIFT_SPEED = 200; 
   static final int LIFT_MAX = 0;
-  static final int LIFT_MIN = -3000;
+  static final int LIFT_MIN = -1900;
 
 public Controller (LinearOpMode opMode){
     robotOpMode = opMode;
@@ -84,10 +86,12 @@ public void drive(float leftStickY,float leftStickX, float rightStickX) {
   }
   
 public void liftUp(){
-    runLift(LIFT_SPEED);
+    robotOpMode.telemetry.addLine("liftUp");
+    runLift(-LIFT_SPEED);
 }
 public void liftDown(){
-    runLift(-LIFT_SPEED);
+    robotOpMode.telemetry.addLine("liftDown");
+    runLift(LIFT_SPEED);
 }
 public void liftStop(){
     robotOpMode.telemetry.addLine("liftStop");
@@ -96,14 +100,18 @@ public void liftStop(){
 
 private void runLift(int position){
     int currentPos = lift.getCurrentPosition();
-    int newPosition = currentPos + position; 
+    int newPosition = currentPos + position;
+    double startTime = runtime.seconds();
+    double elapsedTime = 0.0;
     
     if (newPosition > LIFT_MIN && newPosition < LIFT_MAX){
         
         lift.setTargetPosition(currentPos + position);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift.setPower(1);
-        while (lift.isBusy()){};
+        while (lift.isBusy() || elapsedTime < 2.0){
+            elapsedTime = runtime.seconds() - startTime;
+        };
         lift.setPower(0);
     }
 };
