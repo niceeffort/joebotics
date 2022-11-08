@@ -13,22 +13,42 @@ import com.qualcomm.robotcore.util.Range;
 
 public class Autonomous_1 extends LinearOpMode {
    
-   private Controller RobotController;
+  private Controller RobotController;
   
    public void runOpMode() {
 
    
     RobotController = new Controller(this);
     RobotController.initialize();
+    float SPEED = 0.5f;  
+    int LIFTCOUNT = 20; 
     
 
     waitForStart();
 
     //This is the main loop. I will call the drive function on a loop until you stop the robot
     if (opModeIsActive()) {
-      while (opModeIsActive()){
-        //telemtry.addLine("hello world");
-      }
+        RobotController.drive(0.0f, -SPEED, 0.0f);
+        sleep(1000);
+        RobotController.drive(SPEED, 0.0f, 0.0f);
+        sleep(50);
+        RobotController.drive(0.0f, 0.0f, 0.0f);
+        for (int i = 0; i < LIFTCOUNT; i++) {
+            RobotController.liftUp();
+        }
+        sleep(2000);
+        RobotController.clawClose();
+        sleep(2000);
+        RobotController.drive(-SPEED, 0.0f, 0.0f);
+        sleep(200);
+        RobotController.drive(0.0f, SPEED, 0.0f);
+        sleep(1000);
+        RobotController.drive(-SPEED, 0.0f, 0.0f);
+        sleep(1000);
+        RobotController.drive(0.0f, 0.0f, 0.0f);
+        for (int i = 0; i < LIFTCOUNT; i++) {
+            RobotController.liftDown();
+        }
     }
    }
 }

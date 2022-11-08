@@ -66,6 +66,10 @@ public class DriveCode extends LinearOpMode {
           RobotController.liftStop();
         }
         
+        telemetry.addData("liftPower", RobotController.lift.getPower());
+        
+        //RobotController.update();
+        
         //claw control
         if (gamepad2.right_bumper){
           RobotController.clawClose();
