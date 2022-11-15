@@ -21,7 +21,7 @@ public class Controller {
   private ColorSensor color_sensor;
   private LinearOpMode robotOpMode = null; 
   private ElapsedTime runtime = new ElapsedTime();
-  private int desiredLiftPos = 0;
+  public int desiredLiftPos = 0;
   private double elapsedLiftTime = 0;
   private int lastLiftPos = 0;
   private boolean liftTimeOut = true; 
@@ -66,10 +66,10 @@ public void drive(float leftStickY,float leftStickX, float rightStickX) {
   
 
     //Set the power values based on stick input
-    powerFrontLeft = leftStickY + leftStickX + rightStickX;
-    powerBackLeft = leftStickY + -leftStickX + rightStickX;
-    powerFrontRight = leftStickY + (-leftStickX - rightStickX);
-    powerBackRight = leftStickY + (leftStickX - rightStickX);
+    powerFrontLeft = leftStickY + -leftStickX + rightStickX;
+    powerBackLeft = leftStickY + leftStickX + rightStickX;
+    powerFrontRight = leftStickY + (leftStickX - rightStickX);
+    powerBackRight = leftStickY + (-leftStickX - rightStickX);
 
     //Set the power to the motors
     fr_rt.setPower(powerFactor * powerFrontRight);
@@ -104,6 +104,8 @@ public void liftStop(){
 
 private void runLift(int position){
     int currentPos = lift.getCurrentPosition();
+    robotOpMode.telemetry.addData("currentPos", lift.getCurrentPosition());
+        
     liftTimeOut = true; 
     
     desiredLiftPos = currentPos + position;
