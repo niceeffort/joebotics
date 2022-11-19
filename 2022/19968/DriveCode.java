@@ -46,7 +46,7 @@ public class DriveCode extends LinearOpMode {
         leftStickX = -gamepad1.left_stick_x;
         rightStickX = gamepad1.right_stick_x;
         telemetry.addData("servoPosition", RobotController.claw.getPosition());
-        telemetry.addData("liftPosition", RobotController.lift.getCurrentPosition());
+        //telemetry.addData("liftPosition", RobotController.lift.getCurrentPosition());
         //claw.setPosition(1);
         RobotController.drive(leftStickY, leftStickX, rightStickX); 
         
@@ -68,8 +68,6 @@ public class DriveCode extends LinearOpMode {
         
         telemetry.addData("liftPower", RobotController.lift.getPower());
         
-        //RobotController.update();
-        
         //claw control
         if (gamepad2.right_bumper){
           RobotController.clawClose();
@@ -78,10 +76,12 @@ public class DriveCode extends LinearOpMode {
           RobotController.clawOpen();
         }
         
+        telemetry.addData("desiredLiftPos", RobotController.desiredLiftPos);
+        telemetry.addData("currentLiftPos", RobotController.lift.getCurrentPosition());
+        
         RobotController.color();
         
       }
     }
   }
 }
-

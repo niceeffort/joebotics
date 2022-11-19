@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-
-
 public class Controller {
 
   private DcMotor fr_rt;
@@ -19,15 +17,10 @@ public class Controller {
   public DcMotor lift; 
   public Servo claw; 
   private ColorSensor color_sensor;
-  private LinearOpMode robotOpMode = null; 
-  private ElapsedTime runtime = new ElapsedTime();
-  public int desiredLiftPos = 0;
-  private double elapsedLiftTime = 0;
-  private int lastLiftPos = 0;
-  private boolean liftTimeOut = true; 
-  static final int LIFT_SPEED = 200; 
-  static final int LIFT_MAX = 0;
-  static final int LIFT_MIN = -3000;
+  private LinearOpMode robotOpMode = null;
+  static final float POWER_FACTOR = .5f; 
+  static final int LIFT_MAX = -2525;
+  static final int LIFT_MIN = 0;
 
 public Controller (LinearOpMode opMode){
     robotOpMode = opMode;
@@ -53,7 +46,6 @@ public void initialize() {
     lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     
     color_sensor.enableLed(false);
-    
 }
 
 public void drive(float leftStickY,float leftStickX, float rightStickX) {
@@ -62,9 +54,6 @@ public void drive(float leftStickY,float leftStickX, float rightStickX) {
     float powerFrontRight;
     float powerBackRight;
     
-    float powerFactor = 1.0f; 
-  
-
     //Set the power values based on stick input
     powerFrontLeft = leftStickY + -leftStickX + rightStickX;
     powerBackLeft = leftStickY + leftStickX + rightStickX;
@@ -72,10 +61,10 @@ public void drive(float leftStickY,float leftStickX, float rightStickX) {
     powerBackRight = leftStickY + (-leftStickX - rightStickX);
 
     //Set the power to the motors
-    fr_rt.setPower(powerFactor * powerFrontRight);
-    fr_lt.setPower(powerFactor * powerFrontLeft);
-    bk_lt.setPower(powerFactor * powerBackLeft);
-    bk_rt.setPower(powerFactor * powerBackRight);
+    fr_rt.setPower(POWER_FACTOR * powerFrontRight);
+    fr_lt.setPower(POWER_FACTOR * powerFrontLeft);
+    bk_lt.setPower(POWER_FACTOR * powerBackLeft);
+    bk_rt.setPower(POWER_FACTOR * powerBackRight);
 
     //Print data to the screen
     robotOpMode.telemetry.addData("leftStickY", leftStickY);
@@ -85,17 +74,16 @@ public void drive(float leftStickY,float leftStickX, float rightStickX) {
     robotOpMode.telemetry.addData("powerBackLeft", powerBackLeft);
     robotOpMode.telemetry.addData("powerFrontRight", powerFrontRight);
     robotOpMode.telemetry.addData("powerBackRight", powerBackRight);
-    robotOpMode.telemetry.addData("powerFactor", powerFactor);
     robotOpMode.telemetry.update();
   }
   
 public void liftUp(){
     robotOpMode.telemetry.addLine("liftUp");
-    runLift(-LIFT_SPEED);
-}
+    runLift(LIFT_MAX);
+}    
 public void liftDown(){
     robotOpMode.telemetry.addLine("liftDown");
-    runLift(LIFT_SPEED);
+    runLift(LIFT_MIN);
 }
 public void liftStop(){
     robotOpMode.telemetry.addLine("liftStop");
@@ -103,64 +91,24 @@ public void liftStop(){
 }
 
 private void runLift(int position){
-    int currentPos = lift.getCurrentPosition();
-    robotOpMode.telemetry.addData("currentPos", lift.getCurrentPosition());
-        
-    liftTimeOut = true; 
-    
-    desiredLiftPos = currentPos + position;
-    
-    if (desiredLiftPos < LIFT_MIN){
-        desiredLiftPos = LIFT_MIN;
-    }
-    else if (desiredLiftPos > LIFT_MAX){
-        desiredLiftPos = LIFT_MAX;
-    }
-        
-    lift.setTargetPosition(desiredLiftPos);
+    lift.setTargetPosition(position);
     lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     lift.setPower(1);
-};
+}
 
 public void clawOpen(){
     robotOpMode.telemetry.addLine("clawOpen");
-    claw.setPosition(0.3);
+    claw.setPosition(0.1);
 }
 public void clawClose(){
     robotOpMode.telemetry.addLine("clawClose");
     claw.setPosition(0);
 }
-
     //color sensor 
  public void color(){
      color_sensor.enableLed(false);
      int red = 0;
      red = color_sensor.red(); 
      robotOpMode.telemetry.addData("color: ", red);
- }
- 
- public void update(){
-     if (lift.isBusy()){
-         int currentLiftPos = lift.getCurrentPosition(); 
-         
-         if (currentLiftPos == desiredLiftPos){
-             lift.setPower(0);
-         }
-         else if (lastLiftPos - currentLiftPos < 5) {
-             if (liftTimeOut){
-                 elapsedLiftTime = runtime.seconds();
-                 liftTimeOut = false; 
-             }
-             else {
-                elapsedLiftTime = runtime.seconds() - elapsedLiftTime;
-             }
-         }
-         if (elapsedLiftTime > 2.0){
-             lift.setPower(0);
-             desiredLiftPos = currentLiftPos; 
-         }
-         
-         lastLiftPos = lift.getCurrentPosition();
-     }
  }
 }
