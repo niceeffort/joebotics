@@ -82,7 +82,7 @@
       * and paste it in to your code on the next line, between the double quotes.
       */
      private static final String VUFORIA_KEY =
-             " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+             "AdkdphD/////AAABmUaDyKrZGUM5qRCsBXD2PKYN32rTlDNk8RWpJBPdpM47LQuH0j4RUb/g0pdiMDQ3u5eOM91I4j6nNWGSoUMunVtrs1H5hVkN0CYHKJeXZqunLOyE/njW4P2Fe3YflKhW8c3sismnjFi+jl2rdVo2ag2me7rZ1XyyvGaZx+/4izQPrUCiAyAYGksohce7dc7L8+Tpb1qMDmhcv2Hw97sK9wCjhpN3OQb4RgX2k9zlB8JRylycxDPbUpS/UF7zf/doY602XcQN4cIeeEauf/sxb7qYZ36rMF5Yn5MVcbYNfwrNXK1K9Vm5AXJraUlxAj2RZLpJkmifMpM0M85jjfK1bjFDFSeOnt+CxO/7l93k54+P";
  
      /**
       * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
