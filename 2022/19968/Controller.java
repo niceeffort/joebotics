@@ -13,7 +13,7 @@ public class Controller {
   private DcMotor fr_rt;
   private DcMotor fr_lt;
   private DcMotor bk_lt;
-  private DcMotor bk_rt;
+  public DcMotor bk_rt;
   public DcMotor lift; 
   public Servo claw; 
   private ColorSensor color_sensor;
@@ -34,7 +34,7 @@ public void initialize() {
     bk_rt = robotOpMode.hardwareMap.get(DcMotor.class, "bk_rt");
     lift = robotOpMode.hardwareMap.get(DcMotor.class, "lift");
     claw = robotOpMode.hardwareMap.get(Servo.class, "claw");
-    color_sensor = robotOpMode.hardwareMap.get(ColorSensor.class, "color_sensor");
+   // color_sensor = robotOpMode.hardwareMap.get(ColorSensor.class, "color_sensor");
     
     //setting the directions for the motors
     fr_rt.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -45,7 +45,10 @@ public void initialize() {
     lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     
-    color_sensor.enableLed(false);
+    //color_sensor.enableLed(false);
+    
+    fr_rt.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    fr_rt.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 }
 
 public void drive(float leftStickY,float leftStickX, float rightStickX) {
@@ -65,7 +68,7 @@ public void drive(float leftStickY,float leftStickX, float rightStickX) {
     fr_lt.setPower(POWER_FACTOR * powerFrontLeft);
     bk_lt.setPower(POWER_FACTOR * powerBackLeft);
     bk_rt.setPower(POWER_FACTOR * powerBackRight);
-
+    
     //Print data to the screen
     robotOpMode.telemetry.addData("leftStickY", leftStickY);
     robotOpMode.telemetry.addData("leftStickX", leftStickX);
@@ -79,8 +82,8 @@ public void drive(float leftStickY,float leftStickX, float rightStickX) {
   
 public void liftUp(){
     robotOpMode.telemetry.addLine("liftUp");
-    runLift(LIFT_MAX);
-}    
+  runLift(LIFT_MAX);
+} 
 public void liftDown(){
     robotOpMode.telemetry.addLine("liftDown");
     runLift(LIFT_MIN);
@@ -106,7 +109,7 @@ public void clawClose(){
 }
     //color sensor 
  public void color(){
-     color_sensor.enableLed(false);
+  //   color_sensor.enableLed(false);
      int red = 0;
      red = color_sensor.red(); 
      robotOpMode.telemetry.addData("color: ", red);
