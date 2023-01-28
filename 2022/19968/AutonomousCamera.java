@@ -30,6 +30,7 @@
  package org.firstinspires.ftc.teamcode;
 
  import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -53,7 +54,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  @Autonomous(name = "Autonomous Camera")
  //@Disabled
  public class AutonomousCamera extends LinearOpMode {
- 
+    private Controller RobotController;
+    float SPEED = 0.5f;
      /*
       * Specify the source for the Tensor Flow Model.
       * If the TensorFlowLite object model is included in the Robot Controller App as an "asset",
@@ -103,7 +105,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
          // first.
          initVuforia();
          initTfod();
- 
+
+         RobotController = new Controller(this);
+         RobotController.initialize();
+         float SPEED = 1.0f;
+
          /**
           * Activate TensorFlow Object Detection before we wait for the start command.
           * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
@@ -124,7 +130,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
          telemetry.addData(">", "Press Play to start op mode");
          telemetry.update();
          waitForStart();
- 
+
+         boolean objectDetected = false; 
+         boolean moveStart = true;
+         int MOVE_FORWARD_TIME = 1000;
+         int MOVE_SIDEWAYS_TIME = 1500;
+         int MOVE_FORWARD_START_TIME = 125;
          if (opModeIsActive()) {
              while (opModeIsActive()) {
                  if (tfod != null) {
@@ -133,7 +144,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
                      List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                      if (updatedRecognitions != null) {
                          telemetry.addData("# Objects Detected", updatedRecognitions.size());
- 
+                            
+                         if(moveStart==true){
+                             RobotController.drive(-SPEED, 0.0f, 0.0f);
+                             sleep(MOVE_FORWARD_START_TIME);
+                             RobotController.drive(0.0f, 0.0f, 0.0f);
+                             moveStart = false;
+                             }
                          // step through the list of recognitions and display image position/size information for each one
                          // Note: "Image number" refers to the randomized image orientation/number
                          for (Recognition recognition : updatedRecognitions) {
@@ -146,6 +163,39 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
                              telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
                              telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
                              telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
+                             telemetry.addData("objectDetected",objectDetected);
+                             
+                             
+                             if(objectDetected==false){
+                                String label = recognition.getLabel();
+                                objectDetected = true;
+                                
+                                if(label == LABELS[0]) {
+                                        telemetry.addLine(LABELS[0]);
+                                        RobotController.drive(0.0f, SPEED, 0.0f);
+                                        sleep(MOVE_SIDEWAYS_TIME);
+                                        RobotController.drive(-SPEED, 0.0f, 0.0f);
+                                        sleep(MOVE_FORWARD_TIME);
+                                        RobotController.drive(0.0f, 0.0f, 0.0f);
+                                }
+                                else if(label == LABELS[1]){
+                                        telemetry.addLine(LABELS[1]);
+                                        RobotController.drive(-SPEED, 0.0f, 0.0f);
+                                        sleep(MOVE_FORWARD_TIME);
+                                        RobotController.drive(0.0f, 0.0f, 0.0f);
+                                }
+                                else if(label == LABELS[2]){
+                                        telemetry.addLine(LABELS[2]);
+                                        RobotController.drive(0.0f, -SPEED, 0.0f);
+                                        sleep(MOVE_SIDEWAYS_TIME);
+                                        RobotController.drive(-SPEED, 0.0f, 0.0f);
+                                        sleep(MOVE_FORWARD_TIME);
+                                        RobotController.drive(0.0f, 0.0f, 0.0f);
+                                }
+                                else {
+                                    telemetry.addLine("Nothing Found");
+                                }
+                             }
                          }
                          telemetry.update();
                      }

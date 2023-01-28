@@ -76,10 +76,12 @@ public class DriveCode extends LinearOpMode {
           RobotController.clawOpen();
         }
         
-        telemetry.addData("desiredLiftPos", RobotController.desiredLiftPos);
+        //telemetry.addData("desiredLiftPos", RobotController.desiredLiftPos);
         telemetry.addData("currentLiftPos", RobotController.lift.getCurrentPosition());
         
-        RobotController.color();
+        //RobotController.color();
+
+        telemetry.addData("BackRightPos", RobotController.bk_rt.getCurrentPosition());
         
       }
     }
