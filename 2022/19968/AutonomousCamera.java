@@ -30,6 +30,7 @@
  package org.firstinspires.ftc.teamcode;
 
  import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -98,7 +99,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
       * Detection engine.
       */
      private TFObjectDetector tfod;
- 
+    
+     private ElapsedTime runtime = new ElapsedTime();
+    
      @Override
      public void runOpMode() {
          // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
@@ -132,11 +135,19 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
          waitForStart();
 
          boolean objectDetected = false; 
+         boolean moveIfNotSeen = true;
          boolean moveStart = true;
-         int MOVE_FORWARD_TIME = 1000;
-         int MOVE_SIDEWAYS_TIME = 1500;
-         int MOVE_FORWARD_START_TIME = 125;
+         int MOVE_FORWARD_TIME = 750;
+         int MOVE_SIDEWAYS_TIME = 1250;
+         int MOVE_FORWARD_START_TIME = 75;
+         
+         
+         
+         
+         
          if (opModeIsActive()) {
+             runtime.reset();
+             
              while (opModeIsActive()) {
                  if (tfod != null) {
                      // getUpdatedRecognitions() will return null if no new information is available since
@@ -151,6 +162,16 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
                              RobotController.drive(0.0f, 0.0f, 0.0f);
                              moveStart = false;
                              }
+                             
+                        
+                        if((runtime.seconds() > 20.0) && (objectDetected == false) && (moveIfNotSeen == true)){
+                            
+                            telemetry.addData("runtime",runtime.seconds());
+                            RobotController.drive(-SPEED, 0.0f, 0.0f);
+                            sleep(MOVE_FORWARD_TIME);
+                            RobotController.drive(0.0f, 0.0f, 0.0f);
+                            moveIfNotSeen = false;
+                        }
                          // step through the list of recognitions and display image position/size information for each one
                          // Note: "Image number" refers to the randomized image orientation/number
                          for (Recognition recognition : updatedRecognitions) {
