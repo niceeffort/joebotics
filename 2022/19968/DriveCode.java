@@ -18,6 +18,7 @@ public class DriveCode extends LinearOpMode {
   float leftStickY;
   float leftStickX;
   float rightStickX;
+  private boolean gamepad2_aPressed = false;
 
   
   /**
@@ -74,6 +75,14 @@ public class DriveCode extends LinearOpMode {
         }
         if (gamepad2.left_bumper){
           RobotController.clawOpen();
+        }
+        
+        if (gamepad2.a && gamepad2_aPressed==false){
+          RobotController.toggleEnable();
+          gamepad2_aPressed = true;
+        }
+        else if (gamepad2.a == false){
+          gamepad2_aPressed = false;
         }
         
         //telemetry.addData("desiredLiftPos", RobotController.desiredLiftPos);
