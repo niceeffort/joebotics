@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -19,7 +20,7 @@ public class Controller {
   private ColorSensor color_sensor;
   private boolean enable = true;
   private LinearOpMode robotOpMode = null;
-  static final float POWER_FACTOR = .25f; 
+  static final float POWER_FACTOR = .45f; 
   static final int LIFT_MAX = -2525;
   static final int LIFT_MIN = 0;
 
@@ -38,8 +39,8 @@ public void initialize() {
    // color_sensor = robotOpMode.hardwareMap.get(ColorSensor.class, "color_sensor");
     
     //setting the directions for the motors
-    fr_rt.setDirection(DcMotorSimple.Direction.REVERSE);
-    bk_rt.setDirection(DcMotorSimple.Direction.REVERSE);
+    fr_lt.setDirection(DcMotorSimple.Direction.REVERSE);
+    bk_lt.setDirection(DcMotorSimple.Direction.REVERSE);
     
     //setting the lift to use encoders 
     lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -48,8 +49,22 @@ public void initialize() {
     
     //color_sensor.enableLed(false);
     
-    //fr_rt.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+   // fr_rt.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     //fr_rt.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    //fr_rt.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    //fr_rt.setTargetPosition(2000);
+    
+    encodeMode(fr_rt);
+    encodeMode(fr_lt);
+    encodeMode(bk_rt);
+    encodeMode(bk_lt);
+}
+
+private void encodeMode(DcMotor motor) {
+    motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    motor.setTargetPosition(2000);
 }
 
 public void drive(float leftStickY,float leftStickX, float rightStickX) {
@@ -59,10 +74,10 @@ public void drive(float leftStickY,float leftStickX, float rightStickX) {
     float powerBackRight;
     
     //Set the power values based on stick input
-    powerFrontLeft = leftStickY + -leftStickX + rightStickX;
-    powerBackLeft = leftStickY + leftStickX + rightStickX;
-    powerFrontRight = leftStickY + (leftStickX - rightStickX);
-    powerBackRight = leftStickY + (-leftStickX - rightStickX);
+    powerFrontLeft = leftStickY + leftStickX + rightStickX;
+    powerBackLeft = leftStickY + -leftStickX + rightStickX;
+    powerFrontRight = leftStickY + (-leftStickX - rightStickX);
+    powerBackRight = leftStickY + (leftStickX - rightStickX);
 
     //Set the power to the motors
     if (enable==true){
@@ -76,7 +91,7 @@ public void drive(float leftStickY,float leftStickX, float rightStickX) {
         fr_lt.setPower(0f);
         bk_lt.setPower(0f);
         bk_rt.setPower(0f);
-    }
+     }
     
     //Print data to the screen
     robotOpMode.telemetry.addData("leftStickY", leftStickY);
@@ -86,6 +101,7 @@ public void drive(float leftStickY,float leftStickX, float rightStickX) {
     robotOpMode.telemetry.addData("powerBackLeft", powerBackLeft);
     robotOpMode.telemetry.addData("powerFrontRight", powerFrontRight);
     robotOpMode.telemetry.addData("powerBackRight", powerBackRight);
+    robotOpMode.telemetry.addData("positionBackRight", fr_rt.getCurrentPosition());
     robotOpMode.telemetry.update();
   }
   

@@ -19,7 +19,7 @@ public class DriveCode extends LinearOpMode {
   float leftStickX;
   float rightStickX;
   private boolean gamepad2_aPressed = false;
-
+  
   
   /**
    * This function is executed when this Op Mode is selected from the Driver Station.
@@ -43,8 +43,8 @@ public class DriveCode extends LinearOpMode {
       while (opModeIsActive()) {
         //drive();
         //Get stick inputs
-        leftStickY = gamepad1.left_stick_y;
-        leftStickX = -gamepad1.left_stick_x;
+        leftStickY = -gamepad1.left_stick_y;
+        leftStickX = gamepad1.left_stick_x;
         rightStickX = gamepad1.right_stick_x;
         telemetry.addData("servoPosition", RobotController.claw.getPosition());
         //telemetry.addData("liftPosition", RobotController.lift.getCurrentPosition());
@@ -85,12 +85,13 @@ public class DriveCode extends LinearOpMode {
           gamepad2_aPressed = false;
         }
         
+        
         //telemetry.addData("desiredLiftPos", RobotController.desiredLiftPos);
         telemetry.addData("currentLiftPos", RobotController.lift.getCurrentPosition());
         
         //RobotController.color();
 
-        telemetry.addData("BackRightPos", RobotController.bk_rt.getCurrentPosition());
+        //telemetry.addData("BackRightPos", RobotController.bk_rt.getCurrentPosition());
         
       }
     }
