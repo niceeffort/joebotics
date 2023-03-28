@@ -54,10 +54,10 @@ public void initialize() {
     //fr_rt.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     //fr_rt.setTargetPosition(2000);
     
-    encodeMode(fr_rt);
-    encodeMode(fr_lt);
-    encodeMode(bk_rt);
-    encodeMode(bk_lt);
+    //encodeMode(fr_rt);
+    //encodeMode(fr_lt);
+    //encodeMode(bk_rt);
+    //encodeMode(bk_lt);
 }
 
 private void encodeMode(DcMotor motor) {
