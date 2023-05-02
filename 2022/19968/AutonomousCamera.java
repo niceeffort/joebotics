@@ -64,13 +64,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
       * has been downloaded to the Robot Controller's SD FLASH memory, it must to be loaded using loadModelFromFile()
       * Here we assume it's an Asset.    Also see method initTfod() below .
       */
-     private static final String TFOD_MODEL_ASSET = "model_20230307_162929.tflite";
-     // private static final String TFOD_MODEL_FILE  = "/sdcard/FIRST/tflitemodels/CustomTeamModel.tflite";
- 
+     //private static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
+     //private static final String TFOD_MODEL_FILE  = "model_20230307_162929.tflite";
+     //private static final String TFOD_MODEL_FILE  = "model_20230421_113718.tflite";
+     private static final String TFOD_MODEL_FILE  = "model_20230425_194446.tflite";
+
      private static final String[] LABELS = {
-       "stars",
-       "triangle",
-       "crosses"
+       "plus",
+       "star",
+       "triangle"
      };
  
      /*
@@ -172,6 +174,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
                             RobotController.drive(0.0f, 0.0f, 0.0f);
                             moveIfNotSeen = false;
                         }
+                        
+                         if(objectDetected==false) {
+                                    telemetry.addLine("Nothing Found");
+                         }
                          // step through the list of recognitions and display image position/size information for each one
                          // Note: "Image number" refers to the randomized image orientation/number
                          for (Recognition recognition : updatedRecognitions) {
@@ -185,6 +191,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
                              telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
                              telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
                              telemetry.addData("objectDetected",objectDetected);
+                            
                              
                              
                              if(objectDetected==false){
@@ -212,10 +219,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
                                         RobotController.drive(-SPEED, 0.0f, 0.0f);
                                         sleep(MOVE_FORWARD_TIME);
                                         RobotController.drive(0.0f, 0.0f, 0.0f);
-                                }
-                                else {
-                                    telemetry.addLine("Nothing Found");
-                                }
+                               }
                              }
                          }
                          telemetry.update();
@@ -255,8 +259,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  
          // Use loadModelFromAsset() if the TF Model is built in as an asset by Android Studio
          // Use loadModelFromFile() if you have downloaded a custom team model to the Robot Controller's FLASH.
-         tfod.loadModelFromFile(TFOD_MODEL_ASSET, LABELS);
-         // tfod.loadModelFromFile(TFOD_MODEL_FILE, LABELS);
+         //tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+         tfod.loadModelFromFile(TFOD_MODEL_FILE, LABELS);
      }
  }
  
